@@ -7,6 +7,9 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 // 'gulp-jshint' package needs a pair package to be installed allong with it called 'jshint'
 var jshint = require('gulp-jshint');
+var utilities = require('gulp-util');
+// production is an environment variable which set to 'true' in the terminal by the command .... --production, it var buildProduction to 'true' otherwise it is false or null
+var buildProduction = utilities.env.production;
 
 // function() and construct() look similar. function() does something behind the scenes or return something. construct() creates an object but does not return anything. However construct().method() can do the same thing as a function()
 
@@ -42,10 +45,21 @@ gulp.task('jsBrowserify', ['concat', 'clean'], function() {
 });
 
 // uglify() is an "imported function" that converts the variables in the browserified app.js file into single letter variables that the browser can analyze faster
-gulp.task('minifyScripts', ['jsBrowserify'], function() {
+gulp.task('minifyScripts', ['clean'], function() {
   return gulp.src('.build/js/app.js')
     .pipe(uglify())
     .pipe(gulp.dest('.build/js'))
+});
+
+// build gulp task is used to streamline the dev process so that you can develop prodcution files and development files seperately as needed. Forexample, if you have already concatenated your js files into production build app.js files, then there is no need to take that route again etc.
+gulp.task('build', function() {
+  // when buildProduction is 'true' take the minifyScripts path to work with production files only
+  if (buildProduction) {
+    gulp.start('minifyScripts');
+  } else {
+    gulp.start('jsBrowserify');
+    gulp.start('minifyScripts');
+  }
 });
 
 // jshint is a seperate gulf task that can be run at any point in the dev process to clean up your typically non-fatal errors in the .js files that could cause errors later e.g during concatenation
@@ -54,4 +68,4 @@ gulp.task('jshint', function() {
   return gulp.src([ './js/*.js' ])
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
-})
+});
