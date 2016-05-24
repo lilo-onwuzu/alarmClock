@@ -2,6 +2,22 @@
 <html>
   <head>
     <meta charset="utf-8">
+
+    <!-- Without gulp task -->
+    <!-- to encorporate bower elements/dependencies e.g jquery into index.html, you need to add these links -->
+    <!-- <script src="bower_components/jquery/dist/jquery.min.js"></script> -->
+    <!-- bootstrap for css dependency powered by Bower -->
+    <!-- <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"> -->
+    <!-- bootstrap for js dependency powered by Bower -->
+    <!-- <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
+
+    <!-- With gulp task -->
+    <!-- add library of your installed jquery dependencies powered by Bower -->
+    <script src="build/js/vendor.min.js"></script>
+    <!-- add library of your installed css dependencies powered by Bower -->
+    <link rel="stylesheet" href="build/css/vendor.css">
+
+    <script type="text/javascript" src="build/js/app.js"></script>
     <title>Alarm Clock</title>
   </head>
   <body>

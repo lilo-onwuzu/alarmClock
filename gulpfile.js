@@ -10,6 +10,21 @@ var jshint = require('gulp-jshint');
 var utilities = require('gulp-util');
 // production is an environment variable which set to 'true' in the terminal by the command .... --production, it var buildProduction to 'true' otherwise it is false or null
 var buildProduction = utilities.env.production;
+// var lib below looks like a construct for an object not a function like the others
+// var lib = require('bower-files')();
+// var lib edited to make sure bootstrap dependency files are found correctly
+var lib = require('bower-files')({
+  "overrides":{
+    "bootstrap" : {
+      "main": [
+        "less/bootstrap.less",
+        "dist/css/bootstrap.css",
+        "dist/js/bootstrap.js"
+      ]
+    }
+  }
+});
+
 
 // function() and construct() look similar. function() does something behind the scenes or return something. construct() creates an object but does not return anything. However construct().method() can do the same thing as a function()
 
@@ -60,6 +75,8 @@ gulp.task('build', function() {
     gulp.start('jsBrowserify');
     gulp.start('minifyScripts');
   }
+  // whether in production or development mode, run gulp bower to update the bower dependency libraries whenever you run gulp build
+  gulp.start('bower');
 });
 
 // jshint is a seperate gulf task that can be run at any point in the dev process to clean up your typically non-fatal errors in the .js files that could cause errors later e.g during concatenation
@@ -69,3 +86,22 @@ gulp.task('jshint', function() {
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
 });
+
+// gulp can be used to stream line the process of using bower dependencies
+gulp.task('bowerJS', function() {
+  // find all the files with extension .js in the lib (the library of installed Bower dependencies)
+  return gulp.src(lib.ext('js').files)
+    .pipe(concat('vendor.min.js'))
+    // compress the vendor.min.js file
+    .pipe(uglify())
+    .pipe(gulp.dest('./build/js'));
+});
+
+gulp.task('bowerCSS', function () {
+  return gulp.src(lib.ext('css').files)
+    .pipe(concat('vendor.css'))
+    .pipe(gulp.dest('./build/css'));
+});
+
+// combo Bower gulp task used to update bower JS library and bower CSS library files simulataneously. "['bowerJS', 'bowerCSS']" is the fucntion to be executed when gulp bower is called in the terminal
+gulp.task('bower', ['bowerJS', 'bowerCSS']);
