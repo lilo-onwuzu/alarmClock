@@ -7,5 +7,5 @@ exports.Alarm = function (minute, hour, am_pm){
 
 // prototypes
 exports.Alarm.prototype.set = function() {
-  return this.hour + ":" + this.minute " " + this.am_pm;
+  return this.hour + ":" + this.minute  + " " + this.am_pm ;
 };

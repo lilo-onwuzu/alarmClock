@@ -34,7 +34,7 @@ var lib = require('bower-files')({
 gulp.task('concat', function() {
   // ./ is used to reference the starting directory. ../ is used to go up one directory level. Keep updating and adding file paths in the gulp tasks throughout the dev process
   // var gulp is the "super class/object". its method '.src()' fetches a list of the front-end files to be concatenated seperated by commas.
-  return gulp.src([ './js/*-interface' ])
+  return gulp.src([ './js/*-interface.js' ])
     // '.pipe()' is another "method of the gulp class" that returns the element on the left to the element on the right
     // var concat is a seperate "function or class/object" that comes from a dependency/imported class/package that concats the subject js files passed to it and then creates a new object file from them called allConcat.js
     .pipe(concat('allConcat.js'))
@@ -44,7 +44,7 @@ gulp.task('concat', function() {
 
 // del() is an "imported function" that deletes the folders in the argument. The clean gulp task should be used before the jsBrowserify gulp task where new tmp and build files are created
 gulp.task('clean', function() {
-  return del(['build', 'tmp'])
+  return del(['build', 'tmp']);
 });
 
 // browserify is used to turn a js file into a language that the browser can understand. Some statements in the js files e.g require are not understood by chrome
@@ -52,39 +52,18 @@ gulp.task('clean', function() {
 gulp.task('jsBrowserify', ['concat'], function() {
   // browserify the concatenated js file
   // var browserify is an "imported class/object". .bundle() is a method of browserify that returns the production file (likely after type-casting it into a gulp object so we can apply .pipe() method to it)
-  return browserify({ entries :['./tmp/allConcat.js']})
+  return browserify({ entries: ['./tmp/allConcat.js'] })
     .bundle()
     // source() is an "imported function" that creates a file 'app.js'. .pipe() passes the browserified production file into app.js and saves it in another js folder in 'build' build has the completed production files to be executed
     .pipe(source('app.js'))
-    .pipe.dest('./build/js')
+    .pipe(gulp.dest('./build/js'));
 });
 
 // uglify() is an "imported function" that converts the variables in the browserified app.js file into single letter variables that the browser can analyze faster
-gulp.task('minifyScripts', function() {
+gulp.task('minifyScripts', ['jsBrowserify'], function() {
   return gulp.src('.build/js/app.js')
     .pipe(uglify())
-    .pipe(gulp.dest('.build/js'))
-});
-
-// build gulp task is used to streamline the dev process so that you can develop prodcution files and development files seperately as needed. Forexample, if you have already concatenated your js files into production build app.js files, then there is no need to take that route again etc.
-gulp.task('build', ['clean'], function() {
-  // when buildProduction is 'true' take the minifyScripts path to work with production files only
-  if (buildProduction) {
-    gulp.start('minifyScripts');
-  } else {
-    gulp.start('jsBrowserify');
-    gulp.start('minifyScripts');
-  }
-  // whether in production or development mode, run gulp bower to update the bower dependency libraries whenever you run gulp build
-  gulp.start('bower');
-});
-
-// jshint is a seperate gulf task that can be run at any point in the dev process to clean up your typically non-fatal errors in the .js files that could cause errors later e.g during concatenation
-// jshint() is the
-gulp.task('jshint', function() {
-  return gulp.src([ './js/*.js' ])
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'));
+    .pipe(gulp.dest('.build/js'));
 });
 
 // gulp can be used to stream line the process of using bower dependencies
@@ -105,3 +84,24 @@ gulp.task('bowerCSS', function () {
 
 // combo Bower gulp task used to update bower JS library and bower CSS library files simulataneously. "['bowerJS', 'bowerCSS']" is the fucntion to be executed when gulp bower is called in the terminal
 gulp.task('bower', ['bowerJS', 'bowerCSS']);
+
+// build gulp task is used to streamline the dev process so that you can develop prodcution files and development files seperately as needed. Forexample, if you have already concatenated your js files into production build app.js files, then there is no need to take that route again etc.
+gulp.task('build', ['clean'], function() {
+  // when buildProduction is 'true' take the minifyScripts path to work with production files only
+  if (buildProduction) {
+    gulp.start('minifyScripts');
+    // else if working in development environment alone, no need to bypass minifyScripts
+  } else {
+    gulp.start('jsBrowserify');
+  }
+  // whether in production or development mode, run gulp bower to update the bower dependency libraries whenever you run gulp build
+  gulp.start('bower');
+});
+
+// jshint is a seperate gulf task that can be run at any point in the dev process to clean up your typically non-fatal errors in the .js files that could cause errors later e.g during concatenation
+// place jshint gulp tasks at the end of gulpfile.js incase you want to jshint this gulpfile.js file too. it will terminate only when it reaches the end of the file
+gulp.task('jshint', function() {
+  return gulp.src([ './js/*.js' , 'gulpfile.js'])
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'));
+});

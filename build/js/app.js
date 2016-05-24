@@ -1,3 +1,17 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// construct
+exports.Alarm = function (minute, hour, am_pm){
+  this.minute = minute;
+  this.hour = hour;
+  this.am_pm = am_pm;
+};
+
+// prototypes
+exports.Alarm.prototype.set = function() {
+  return this.hour + ":" + this.minute  + " " + this.am_pm ;
+};
+
+},{}],2:[function(require,module,exports){
 // require alarm.js back-end logic
 // alarm-interface will get concatenated and placed in tmp folder. In this folder, alarm.js is in the js folder directory one level above tmp
 var Alarm = require('./../js/alarm.js').Alarm;
@@ -76,3 +90,5 @@ $(document).ready(function() {
 
   });
 });
+
+},{"./../js/alarm.js":1}]},{},[2]);
