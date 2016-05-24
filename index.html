@@ -21,17 +21,29 @@
     <title>Alarm Clock</title>
   </head>
   <body>
-    <form id="alarm" action="index.html" method="post">
+
+    <form class="alarm" action="index.html" method="post">
       <label for="hour">Hour</label>
       <input type="text" name="hour" id="hour">
       <label for="minute">Minute</label>
       <input type="text" name="minute" id="minute">
       <label for="am_pm"></label>
-      <select name="am_pm">
+      <select id="am_pm" name="am_pm">
+        <option value=""></option>
         <option value="am">am</option>
         <option value="pm">pm</option>
       </select>
-      <button type="submit" name="button">Set Alarm</button>
+      <button type="submit" name="button">Set Alarm</button><br><br>
+      <button class="btn btn-info" id="five" type="button">Snooze 5 mins</button>
+      <button class="btn btn-success ten" id="ten" type="button">Snooze 10 mins</button>
     </form>
+
+    <button type="button" class="btn btn-success addAlarm">Add Alarm</button>
+    <button type="button" class="btn btn-danger removeAlarm">Remove Alarm</button><br><br>
+
+    <div class="result">
+      <span id="currentTime"></span>
+    </div>
+
   </body>
 </html>

@@ -49,7 +49,7 @@ gulp.task('clean', function() {
 
 // browserify is used to turn a js file into a language that the browser can understand. Some statements in the js files e.g require are not understood by chrome
 // there are 3 arguments in this gulp task: the task name, the pre-tasks and the function to execute when this task name is called. It more efficient to browserify the concatenated js files than vice-versa. The pre-task argument can be left empty if none are needed for instance if you are only working with one front-end js file
-gulp.task('jsBrowserify', ['concat', 'clean'], function() {
+gulp.task('jsBrowserify', ['concat'], function() {
   // browserify the concatenated js file
   // var browserify is an "imported class/object". .bundle() is a method of browserify that returns the production file (likely after type-casting it into a gulp object so we can apply .pipe() method to it)
   return browserify({ entries :['./tmp/allConcat.js']})
@@ -60,14 +60,14 @@ gulp.task('jsBrowserify', ['concat', 'clean'], function() {
 });
 
 // uglify() is an "imported function" that converts the variables in the browserified app.js file into single letter variables that the browser can analyze faster
-gulp.task('minifyScripts', ['clean'], function() {
+gulp.task('minifyScripts', function() {
   return gulp.src('.build/js/app.js')
     .pipe(uglify())
     .pipe(gulp.dest('.build/js'))
 });
 
 // build gulp task is used to streamline the dev process so that you can develop prodcution files and development files seperately as needed. Forexample, if you have already concatenated your js files into production build app.js files, then there is no need to take that route again etc.
-gulp.task('build', function() {
+gulp.task('build', ['clean'], function() {
   // when buildProduction is 'true' take the minifyScripts path to work with production files only
   if (buildProduction) {
     gulp.start('minifyScripts');
