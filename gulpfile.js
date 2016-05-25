@@ -24,6 +24,8 @@ var lib = require('bower-files')({
     }
   }
 });
+// automatically re-load browser under some gulp-task-defined conditions
+var browserSync = require('browser-sync').create();
 
 
 // function() and construct() look similar. function() does something behind the scenes or return something. construct() creates an object but does not return anything. However construct().method() can do the same thing as a function()
@@ -104,4 +106,30 @@ gulp.task('jshint', function() {
   return gulp.src([ './js/*.js' , 'gulpfile.js'])
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
+});
+
+// watch for changes in all the js files and bower packages i.e whenever changes are saved
+// use gulp serve to start running the server to watch changes
+// remember that whenever you make changes in this file (gulpfile.js) on the files to watch, you have to run the server again with gulp serve
+gulp.task('serve', function() {
+  browserSync.init({
+    server: {
+      baseDir: "./",
+      index: "index.html"
+    }
+  });
+  gulp.watch(['js/*.js', 'index.html'], ['jsBuild']);
+  // watch the Bower manifest file for changes
+  gulp.watch(['bower.json'], ['bowerBuild']);
+});
+
+// reload local server (browser) whenever gulp serve is true
+//jsBrowserify and jshint will run simultaneoulsy unless a dependency array(pre-task array) is defined for either one
+gulp.task('jsBuild', ['jsBrowserify', 'jshint'], function(){
+  browserSync.reload();
+});
+
+// reload local server (browser) whenever gulp serve is true
+gulp.task('bowerBuild', ['bower'], function(){
+  browserSync.reload();
 });

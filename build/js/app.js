@@ -28,12 +28,18 @@ function resetFields () {
 $(document).ready(function() {
 
   // moment() here is a function that has been installed through Bower and packaged in the vendor.js and vendor.css files
-  // time variable should be independent of document or form status
+  // time variable should be independent of document or form submit status
   var time = moment().format('LT');
-  // user wants current time to be displayed synchronously
+
+  // QUESTION??? how can we update the time synchronously
+  setInterval(function() {
+    time = moment().format('LT');
+  }, 60000);
+
+  //show current time
   $("#currentTime").text(time);
 
-  // add or remove alarm when document is loaded
+  // add alarm when document is loaded
   $(".addAlarm").click(function() {
     $("#alarm").append(
       '<form class="alarm" action="index.html" method="post">' +
@@ -54,10 +60,15 @@ $(document).ready(function() {
     );
   });
 
+  // remove alarm when document is loaded
   $(".removeAlarm").click(function() {
     $(".alarm").last().remove();
   });
 
+  var alarm = false;
+  var setAlarm;
+
+  // what to do on submit
   $("#alarm").submit(function(event) {
     event.preventDefault();
 
@@ -65,35 +76,39 @@ $(document).ready(function() {
     var hour = $("#hour").val();
     var minute = $('#minute').val();
     var am_pm = $('#am_pm').val();
-
     var newAlarm = new Alarm (minute, hour, am_pm);
     // format alarm time to same format as moment().format('LT')
-    var setAlarm = newAlarm.set();
-    var alarm = false;
+    setAlarm = newAlarm.set();
+    // display alarm set time
     $("#alarmTime").text(setAlarm);
 
-    // resetFields so new alarm can be set
+    // resetFields so new alarm can be set easily
     resetFields();
 
-    // set alarm to true when equal
-    if (time === setAlarm) {
-      alarm = true;
-      // while alarm is true, snooze
-      $("#five").click(function() {
-        alarm = false;
-        alarm.delay(300000);
-      });
-      $("#ten").click(function() {
-        alarm = false;
-        alarm.delay(600000);
-      });
-    }
-
-    if (alarm === true) {
-      $("#ring").text("ALARM!!!!");
-    }
-
+  // end of submit event
   });
+
+  // snooze 5 --continuos
+  $("#five").click(function() {
+    alarm = false;
+    setInterval(alert = true, 2000);
+  });
+
+  // snooze 10 --continuos
+  $("#ten").click(function() {
+    alarm = false;
+    // alarm.delay(600000);
+  });
+
+  // set alarm to true and display whenever time = setAlarm --continuos
+  if (time === setAlarm) {
+    alarm = true;
+    $("#ring").text("ALARM!!!!");
+  } else {
+    $("#ring").text("");
+  }
+
+// end of document ready
 });
 
 },{"./../js/alarm.js":1}]},{},[2]);
