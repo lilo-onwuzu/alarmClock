@@ -22,7 +22,8 @@
   </head>
   <body>
 
-    <form class="alarm" action="index.html" method="post">
+    <br><br>
+    <form id="alarm" action="index.html" method="post">
       <label for="hour">Hour</label>
       <input type="text" name="hour" id="hour">
       <label for="minute">Minute</label>
@@ -30,19 +31,23 @@
       <label for="am_pm"></label>
       <select id="am_pm" name="am_pm">
         <option value=""></option>
-        <option value="am">am</option>
-        <option value="pm">pm</option>
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
       </select>
       <button type="submit" name="button">Set Alarm</button><br><br>
-      <button class="btn btn-info" id="five" type="button">Snooze 5 mins</button>
-      <button class="btn btn-success ten" id="ten" type="button">Snooze 10 mins</button>
+
     </form>
+
+    <button class="btn btn-info" id="five" type="button">Snooze 5 mins</button>
+    <button class="btn btn-success ten" id="ten" type="button">Snooze 10 mins</button><br><br>
 
     <button type="button" class="btn btn-success addAlarm">Add Alarm</button>
     <button type="button" class="btn btn-danger removeAlarm">Remove Alarm</button><br><br>
 
-    <div class="result">
-      <span id="currentTime"></span>
+    <div class="time">
+      <h4>The time now is: <span id="currentTime"></span></h4>
+      <h4>Your alarm is set for: <span id="alarmTime"></span></h4>
+      <h3><span id="ring"></span></h3>
     </div>
 
   </body>

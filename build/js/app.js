@@ -19,12 +19,6 @@ var Alarm = require('./../js/alarm.js').Alarm;
 // if it does not find the required element in the directory, it will search in the node_modules folder for an npm dependency. Note that require cannot find bower dependencies.
 // js uses bower packages that have been packaged into the vendor files included in the html. So when the html runs, all the bower variables get initialized
 
-// moment() here is a function that has been installed through Bower and packaged in the vendor.js and vendor.css files
-// time variable should be independent of document or form status
-var time = moment().format('LT');
-// user wants current time to be displayed synchronously
-$("#currentTime").text(time);
-
 function resetFields () {
   $("#hour").val("");
   $("#minute").val("");
@@ -33,9 +27,15 @@ function resetFields () {
 
 $(document).ready(function() {
 
+  // moment() here is a function that has been installed through Bower and packaged in the vendor.js and vendor.css files
+  // time variable should be independent of document or form status
+  var time = moment().format('LT');
+  // user wants current time to be displayed synchronously
+  $("#currentTime").text(time);
+
   // add or remove alarm when document is loaded
   $(".addAlarm").click(function() {
-    $(".alarm").append(
+    $("#alarm").append(
       '<form class="alarm" action="index.html" method="post">' +
         '<label for="hour">Hour</label>' +
         '<input type="text" name="hour" id="hour">' +
@@ -58,7 +58,7 @@ $(document).ready(function() {
     $(".alarm").last().remove();
   });
 
-  $(".alarm").submit(function(event) {
+  $("#alarm").submit(function(event) {
     event.preventDefault();
 
     // transfer parameters
@@ -66,16 +66,17 @@ $(document).ready(function() {
     var minute = $('#minute').val();
     var am_pm = $('#am_pm').val();
 
-    var newAlarm = new Alarm (hour, minute, am_pm);
+    var newAlarm = new Alarm (minute, hour, am_pm);
     // format alarm time to same format as moment().format('LT')
     var setAlarm = newAlarm.set();
     var alarm = false;
+    $("#alarmTime").text(setAlarm);
 
     // resetFields so new alarm can be set
     resetFields();
 
     // set alarm to true when equal
-    if (time == setAlarm) {
+    if (time === setAlarm) {
       alarm = true;
       // while alarm is true, snooze
       $("#five").click(function() {
@@ -86,6 +87,10 @@ $(document).ready(function() {
         alarm = false;
         alarm.delay(600000);
       });
+    }
+
+    if (alarm === true) {
+      $("#ring").text("ALARM!!!!");
     }
 
   });
