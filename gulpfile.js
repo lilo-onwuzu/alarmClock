@@ -63,9 +63,9 @@ gulp.task('jsBrowserify', ['concat'], function() {
 
 // uglify() is an "imported function" that converts the variables in the browserified app.js file into single letter variables that the browser can analyze faster
 gulp.task('minifyScripts', ['jsBrowserify'], function() {
-  return gulp.src('.build/js/app.js')
+  return gulp.src('./build/js/app.js')
     .pipe(uglify())
-    .pipe(gulp.dest('.build/js'));
+    .pipe(gulp.dest('./build/js'));
 });
 
 // gulp can be used to stream line the process of using bower dependencies
@@ -118,9 +118,10 @@ gulp.task('serve', function() {
       index: "index.html"
     }
   });
-  gulp.watch(['js/*.js', 'index.html'], ['jsBuild']);
+  gulp.watch(['js/*.js'], ['jsBuild']);
   // watch the Bower manifest file for changes
   gulp.watch(['bower.json'], ['bowerBuild']);
+  gulp.watch(['*.html'], ['htmlBuild']);
 });
 
 // reload local server (browser) whenever gulp serve is true
@@ -131,5 +132,9 @@ gulp.task('jsBuild', ['jsBrowserify', 'jshint'], function(){
 
 // reload local server (browser) whenever gulp serve is true
 gulp.task('bowerBuild', ['bower'], function(){
+  browserSync.reload();
+});
+
+gulp.task('htmlBuild', function() {
   browserSync.reload();
 });
