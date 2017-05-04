@@ -8,7 +8,8 @@
 	05.24.2016
 
 #### _Description_
-	This site implements an alarm clock or timer. Set alarm time, snooze for 5-10 mins. 
+	This site implements an alarm clock or timer. Tells time through the moment package installed through node/npm.
+	Set alarm time, snooze for 5-10 mins. 
 	It is built with a html & js.
 	The js back-end is written in an object oriented form with alarm as the object/construct so multiple alarms can be set.
 	All js code (band-end and front-end) is built in a modular form for simplicity during development.
